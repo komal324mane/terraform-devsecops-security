@@ -1,8 +1,37 @@
+<div align="center">
+
 # Terraform DevSecOps Security Lab
 
-A hands-on comparison of an intentionally unsafe Azure NSG rule and a restricted example, with PowerShell automation for tfsec and Checkov.
+### Detect · Understand · Remediate · Verify
 
-> `samples/insecure` is deliberately vulnerable training material. Do not apply it, connect it to a real network, or copy its public SSH rule into a workload. The examples include no credentials and are not deployed by the scan script.
+![Terraform](https://img.shields.io/badge/Terraform-Security-844FBA?style=for-the-badge&logo=terraform&logoColor=white)
+![Scanners](https://img.shields.io/badge/Scanners-tfsec%20%7C%20Checkov-2563EB?style=for-the-badge)
+![Automation](https://img.shields.io/badge/Automation-PowerShell-5391FE?style=for-the-badge&logo=powershell&logoColor=white)
+
+**A hands-on IaC security lab with intentionally vulnerable and remediated examples.**
+
+</div>
+
+> [!CAUTION]
+> `samples/insecure` is deliberately vulnerable training material. **Do not apply it**, connect it to a real network, or copy its public SSH rule into a workload. The examples contain no credentials and are never deployed by the scan script.
+
+## At a glance
+
+| Sample | Expected scanner result | Purpose |
+| --- | --- | --- |
+| `samples/secure` | Both scanners pass | Baseline example with restricted SSH source |
+| `samples/insecure` | Both scanners report public SSH | Verify detection and failure behavior |
+
+## Contents
+
+- [Detection workflow](#detection-workflow)
+- [Samples](#samples)
+- [Install pinned tools](#install-pinned-tools)
+- [Run scans](#run-scans)
+- [Findings and remediation](#finding-and-remediation)
+- [CI and validation](#ci-integration-and-failure-behavior)
+
+### Detection workflow
 
 ```mermaid
 flowchart LR
@@ -41,7 +70,7 @@ From the repository root:
 .\scripts\Invoke-Scans.ps1 -Sample insecure
 ```
 
-The secure mode fails if either scanner exits nonzero. The insecure mode fails if both scanners return success; otherwise inspect scanner output and verify that the public SSH rule was actually flagged. A tool/runtime error is not evidence of a security finding. The script never suppresses findings.
+The secure mode fails if either scanner exits nonzero. The insecure mode confirms that **both** tools report the expected public-SSH finding (`tfsec` public SSH ingress and Checkov `CKV_AZURE_10`). A missing expected finding or scanner/runtime error is reported as a failure; it is not treated as a successful security test. The script never suppresses findings.
 
 ## Finding and remediation
 
@@ -67,3 +96,11 @@ terraform validate
 ```
 
 No command in this lab provisions Azure resources. `terraform validate` validates syntax/provider schema; the intentionally insecure and secure samples are not deployment instructions.
+
+---
+
+<div align="center">
+
+Part of the [Azure DevOps portfolio](https://github.com/komal324mane) · [Terraform infrastructure](https://github.com/komal324mane/terraform-azure-infrastructure) · [Pipeline lab](https://github.com/komal324mane/azure-devops-terraform-pipeline)
+
+</div>
